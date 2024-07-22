@@ -1,14 +1,21 @@
 TARGETS ?= targets
 TARGET ?= x86_64-dev
 
-all: TARGET_CHECK setup
+all: TARGET_CHECK boot
 
 TARGET_CHECK:
 	@if [ ! -f $(TARGETS)/$(TARGET).mk ]; then \
 		echo "Error: Target file $(TARGETS)/$(TARGET).mk does not exist."; \
-    	exit 1; \
+		exit 1; \
 	fi
 
 include $(TARGETS)/$(TARGET).mk
-setup:
-	@echo $(CTOOLCHAIN)
+boot: BOOT_CHECK
+
+BOOT_CHECK:
+	@if [ ! -f $(TARGETBOOT)/boot.mk ]; then \
+		echo "Error: TARGETBOOT file $(TARGETBOOT)/boot.mk does not exist."; \
+		exit 1; \
+	fi
+
+include $(TARGETBOOT)/boot.mk
