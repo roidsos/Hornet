@@ -4,3 +4,8 @@
 *efi
 *bin
 *test
+.config
+.config.old
+
+# TODO: Change this to wherever config.h will be moved
+config.h

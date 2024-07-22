@@ -1,7 +1,29 @@
+include .config
+
 TARGETS ?= targets
 TARGET ?= x86_64-dev
 
+# TODO: choose a better place for config.h
+KERNEL_CONFIG_PATH := config.h
+
 all: TARGET_CHECK boot
+
+.config:
+	@utils/kconfiglib/alldefconfig.py
+	@$(MAKE) $(KERNEL_CONFIG_PATH)
+
+$(KERNEL_CONFIG_PATH): Kconfig .config
+	@utils/kconfiglib/genconfig.py --header-path $@
+
+.PHONY: menuconfig
+menuconfig:
+	@utils/kconfiglib/menuconfig.py
+	@$(MAKE) $(KERNEL_CONFIG_PATH)
+
+.PHONY: guiconfig
+guiconfig:
+	@utils/kconfiglib/guiconfig.py
+	@$(MAKE) $(KERNEL_CONFIG_PATH)
 
 TARGET_CHECK:
 	@if [ ! -f $(TARGETS)/$(TARGET).mk ]; then \
@@ -19,3 +41,7 @@ BOOT_CHECK:
 	fi
 
 include $(TARGETBOOT)/boot.mk
+
+.PHONY: cleandist
+cleandist:
+	@rm -f $(KERNEL_CONFIG_PATH) .config

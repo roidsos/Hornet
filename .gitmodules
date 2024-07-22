@@ -1,3 +1,6 @@
 [submodule "boot/efi"]
 	path = boot/efi
 	url = https://github.com/aurixos/efi
+[submodule "utils/kconfiglib"]
+	path = utils/kconfiglib
+	url = https://github.com/ulfalizer/Kconfiglib
