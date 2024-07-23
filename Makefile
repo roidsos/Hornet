@@ -12,19 +12,18 @@ KCONFIGLIB_DIR := kconfiglib
 $(KCONFIGLIB_DIR):
 	@if [ ! -d "$(KCONFIGLIB_DIR)" ]; then \
 		echo "Kconfiglib not found. Downloading..."; \
-		curl -L -o $(KCONFIGLIB_ARCHIVE) $(KCONFIGLIB_ZIP); \
-		unzip $(KCONFIGLIB_ARCHIVE); \
-		mv $(KCONFIGLIB_EXTRACTED_DIR) $(KCONFIGLIB_DIR); \
-		rm $(KCONFIGLIB_ARCHIVE); \
+		curl -L -o $(KCONFIGLIB_ZIP) $(KCONFIGLIB_URL); \
+		unzip $(KCONFIGLIB_ZIP) -d $(KCONFIGLIB_DIR); \
+		rm $(KCONFIGLIB_ZIP); \
 	fi
 
-all: TARGET_CHECK boot
+all: setup TARGET_CHECK boot
 
 .config: $(KCONFIGLIB_DIR)
 	@$(KCONFIGLIB_DIR)/Kconfiglib-master/alldefconfig.py
 	@$(MAKE) $(KERNEL_CONFIG_PATH)
 
-$(KERNEL_CONFIG_PATH): Kconfig .config
+$(KERNEL_CONFIG_PATH): Kconfig
 	@$(KCONFIGLIB_DIR)/Kconfiglib-master/genconfig.py --header-path $@
 
 .PHONY: menuconfig
