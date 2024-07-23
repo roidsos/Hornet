@@ -1,9 +1,9 @@
 include .config
 
 TARGETS ?= targets
-TARGET ?= x86_64-dev
+TARGET ?= x86_64-no_bl
 
-KERNEL_CONFIG_PATH := sboot/src/config.h
+KERNEL_CONFIG_PATH := src/config.h
 KCONFIGLIB_URL := https://github.com/ulfalizer/Kconfiglib/archive/refs/heads/master.zip
 KCONFIGLIB_ZIP := kconfiglib.zip
 KCONFIGLIB_DIR := kconfiglib
@@ -17,7 +17,7 @@ $(KCONFIGLIB_DIR):
 		rm $(KCONFIGLIB_ZIP); \
 	fi
 
-all: setup TARGET_CHECK boot
+all: setup TARGET_CHECK
 
 .config: $(KCONFIGLIB_DIR)
 	@$(KCONFIGLIB_DIR)/Kconfiglib-master/alldefconfig.py
@@ -37,21 +37,12 @@ guiconfig: $(KCONFIGLIB_DIR)
 	@$(MAKE) $(KERNEL_CONFIG_PATH)
 
 TARGET_CHECK:
-	@if [ ! -f $(TARGETS)/$(TARGET).mk ]; then \
-		echo "Error: Target file $(TARGETS)/$(TARGET).mk does not exist."; \
+	@if [ ! -f src/arch/$(TARGET)/build.mk ]; then \
+		echo "Error: TARGET file src/arch/$(TARGET)/build.mk does not exist."; \
 		exit 1; \
 	fi
 
-include $(TARGETS)/$(TARGET).mk
-boot: BOOT_CHECK
-
-BOOT_CHECK:
-	@if [ ! -f $(TARGETBOOT)/boot.mk ]; then \
-		echo "Error: TARGETBOOT file $(TARGETBOOT)/boot.mk does not exist."; \
-		exit 1; \
-	fi
-
-include $(TARGETBOOT)/boot.mk
+include src/arch/$(TARGET)/build.mk
 
 .PHONY: cleandist
 cleandist:

@@ -1,4 +1,4 @@
-#include <efi.h>
+#include <efi/efi.h>
 
 EFI_STATUS boot_entry(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 {
