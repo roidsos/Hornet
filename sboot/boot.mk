@@ -11,15 +11,17 @@ OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 OUT := $(BOOT_DIR)/$(BIN_DIR)/$(BTARGET)
 
 
-all: SETUP_BOOT $(OUT)
+all: $(OUT)
 
 SETUP_BOOT:
-	@if [ ! -d "$efi" ]; then \
+	@if [ ! -d "sboot/efi" ]; then \
+		cd sboot; \
 		git clone https://github.com/aurixos/efi; \
+		cd ..; \
 	fi
 	@mkdir -p $(BOOT_DIR)/$(BIN_DIR)
 
-$(OUT): $(OBJECTS)
+$(OUT): SETUP_BOOT $(OBJECTS)
 	@printf "\tOUT\t\t$@\n"
 	@$(BCC) $(OBJECTS) -o $@ -target $(BCTOOLCHAIN) $(BLDFLAGS)
 
