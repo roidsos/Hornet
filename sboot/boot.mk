@@ -10,9 +10,15 @@ OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 
 OUT := $(BOOT_DIR)/$(BIN_DIR)/$(BTARGET)
 
-all: SETUP_BOOT $(OUT)
 
-SETUP_BOOT:
+all: $(OUT)
+
+setup:
+	@if [ ! -d "sboot/efi" ]; then \
+		cd sboot; \
+		git clone https://github.com/aurixos/efi; \
+		cd ..; \
+	fi
 	@mkdir -p $(BOOT_DIR)/$(BIN_DIR)
 
 $(OUT): $(OBJECTS)
@@ -27,7 +33,7 @@ clean:
 	@rm -rf $(BOOT_DIR)/$(BIN_DIR) $(OBJECTS) $(OUT)
 
 
-dir: $(OUT)
+dir: all $(OUT)
 	@mkdir -p test
 	@mkdir -p test/EFI/BOOT
 	@mkdir -p test/boot

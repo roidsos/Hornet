@@ -1,3 +1,0 @@
-[submodule "boot/efi"]
-	path = boot/efi
-	url = https://github.com/aurixos/efi
