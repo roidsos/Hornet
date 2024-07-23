@@ -3,26 +3,38 @@ include .config
 TARGETS ?= targets
 TARGET ?= x86_64-dev
 
-# TODO: choose a better place for config.h
-KERNEL_CONFIG_PATH := config.h
+KERNEL_CONFIG_PATH := sboot/src/config.h
+KCONFIGLIB_URL := https://github.com/ulfalizer/Kconfiglib/archive/refs/heads/master.zip
+KCONFIGLIB_ZIP := kconfiglib.zip
+KCONFIGLIB_DIR := kconfiglib
+
+# Target to download and extract Kconfiglib if needed
+$(KCONFIGLIB_DIR):
+	@if [ ! -d "$(KCONFIGLIB_DIR)" ]; then \
+		echo "Kconfiglib not found. Downloading..."; \
+		curl -L -o $(KCONFIGLIB_ARCHIVE) $(KCONFIGLIB_ZIP); \
+		unzip $(KCONFIGLIB_ARCHIVE); \
+		mv $(KCONFIGLIB_EXTRACTED_DIR) $(KCONFIGLIB_DIR); \
+		rm $(KCONFIGLIB_ARCHIVE); \
+	fi
 
 all: TARGET_CHECK boot
 
-.config:
-	@utils/kconfiglib/alldefconfig.py
+.config: $(KCONFIGLIB_DIR)
+	@$(KCONFIGLIB_DIR)/Kconfiglib-master/alldefconfig.py
 	@$(MAKE) $(KERNEL_CONFIG_PATH)
 
 $(KERNEL_CONFIG_PATH): Kconfig .config
-	@utils/kconfiglib/genconfig.py --header-path $@
+	@$(KCONFIGLIB_DIR)/Kconfiglib-master/genconfig.py --header-path $@
 
 .PHONY: menuconfig
-menuconfig:
-	@utils/kconfiglib/menuconfig.py
+menuconfig: $(KCONFIGLIB_DIR)
+	@$(KCONFIGLIB_DIR)/Kconfiglib-master/menuconfig.py
 	@$(MAKE) $(KERNEL_CONFIG_PATH)
 
 .PHONY: guiconfig
-guiconfig:
-	@utils/kconfiglib/guiconfig.py
+guiconfig: $(KCONFIGLIB_DIR)
+	@$(KCONFIGLIB_DIR)/guiconfig.py
 	@$(MAKE) $(KERNEL_CONFIG_PATH)
 
 TARGET_CHECK:

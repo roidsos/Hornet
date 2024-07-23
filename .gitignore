@@ -9,3 +9,4 @@
 
 # TODO: Change this to wherever config.h will be moved
 config.h
+kconfiglib/*

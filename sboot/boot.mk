@@ -10,9 +10,13 @@ OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 
 OUT := $(BOOT_DIR)/$(BIN_DIR)/$(BTARGET)
 
+
 all: SETUP_BOOT $(OUT)
 
 SETUP_BOOT:
+	@if [ ! -d "$efi" ]; then \
+		git clone https://github.com/aurixos/efi; \
+	fi
 	@mkdir -p $(BOOT_DIR)/$(BIN_DIR)
 
 $(OUT): $(OBJECTS)
