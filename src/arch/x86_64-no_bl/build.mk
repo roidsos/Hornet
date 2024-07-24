@@ -14,7 +14,7 @@ LDFLAGS := -nostdlib -Wl,-entry:boot_entry -Wl,-subsystem:efi_application -fuse-
 
 CLANG_TARGET = x86_64-unknown-windows
 
-OUT := $(BIN_DIR)/h0r.efi
+OUT := $(BIN_DIR)/hornet.efi
 
 all: $(OUT)
 
@@ -36,13 +36,3 @@ bin/%.c.o: src/%.c $(HEADERS)
 
 clean:
 	@rm -rf $(BIN_DIR)
-
-
-dir: all $(OUT)
-	@mkdir -p test
-	@mkdir -p test/EFI/BOOT
-	@mkdir -p test/boot
-	@cp $(OUT) test/EFI/BOOT/BOOTX64.efi
-
-run: dir
-	@qemu-system-x86_64 -m 2G -drive if=pflash,format=raw,readonly=on,file=/usr/share/ovmf/x64/OVMF.fd -drive file=fat:rw:test,media=disk,format=raw -debugcon stdio
