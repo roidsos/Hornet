@@ -1,8 +1,5 @@
 include .config
 
-TARGETS ?= targets
-TARGET ?= x86_64-no_bl
-
 KERNEL_CONFIG_PATH := src/config.h
 KCONFIGLIB_URL := https://github.com/ulfalizer/Kconfiglib/archive/refs/heads/master.zip
 KCONFIGLIB_ZIP := kconfiglib.zip
