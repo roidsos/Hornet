@@ -21,7 +21,8 @@ CXXFLAGS := -ffreestanding \
 -fno-stack-check \
 -fno-rtti \
 -fno-lto \
--fno-pic \
+-fPIE \
+-fpic \
 -mcmodel=kernel \
 -mabi=sysv \
 -mno-80387 \
@@ -33,19 +34,16 @@ CXXFLAGS := -ffreestanding \
 -Isrc \
 -Ilib
 ASMFLAGS := -f elf64 -g
-LDFLAGS := -nostdlib -Wl,-entry:boot_entry -Wl,-subsystem:efi_application -fuse-ld=lld-link
+LDFLAGS := -nostdlib # TODO: linker script 
 
-CLANG_TARGET = x86_64-unknown-windows
+CLANG_TARGET = x86_64-pc-elf
 
-OUT := $(BIN_DIR)/hornet.efi
+OUT := $(BIN_DIR)/hornet.elf
 
 all: $(OUT)
 
 setup:
-	@if [ ! -d "lib/efi" ]; then \
-		mkdir -p lib; \
-		cd lib && git clone https://github.com/aurixos/efi && cd ..; \
-	fi
+	@mkdir -p lib
 	@mkdir -p $(BIN_DIR)
 
 $(OUT): $(OBJECTS)
