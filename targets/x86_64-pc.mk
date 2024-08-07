@@ -21,8 +21,8 @@ CXXFLAGS := -ffreestanding \
 -fno-stack-check \
 -fno-rtti \
 -fno-lto \
--fPIE \
--fpic \
+-fno-PIE \
+-fno-pic \
 -mcmodel=kernel \
 -mabi=sysv \
 -mno-80387 \
@@ -34,7 +34,7 @@ CXXFLAGS := -ffreestanding \
 -Isrc \
 -Ilib
 ASMFLAGS := -f elf64 -g
-LDFLAGS := -nostdlib # TODO: linker script 
+LDFLAGS := -nostdlib -static -T linker.ld # TODO: linker script 
 
 CLANG_TARGET = x86_64-pc-elf
 
